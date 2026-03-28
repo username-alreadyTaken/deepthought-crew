@@ -240,7 +240,8 @@ st.markdown("""
 # ── Anthropic Client ──────────────────────────────────────────────────────────
 @st.cache_resource
 def get_client():
-    return anthropic.Anthropic()
+    api_key = st.secrets.get("ANTHROPIC_API_KEY") if hasattr(st, "secrets") else None
+    return anthropic.Anthropic(api_key=api_key)  # falls back to ANTHROPIC_API_KEY env var if None
 
 # ── Agent Prompts ─────────────────────────────────────────────────────────────
 
@@ -473,7 +474,14 @@ with st.sidebar:
 
     st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
 
-    # Advanced options
+    # Advanced options — initialise defaults first, then overridden inside expander
+    segment = ""
+    geography = "Global"
+    market_size = ""
+    timeframe = "Current (2025–2026)"
+    unique_angle = ""
+    run_trend = run_comp = run_voice = run_opp = run_exec = True
+
     with st.expander("⚙️ Advanced Parameters", expanded=False):
         segment = st.text_input("Target Segment", placeholder="e.g. B2B SaaS, SMBs, Gen Z consumers")
         geography = st.selectbox("Geography", ["Global", "North America", "Europe", "Asia-Pacific", "India", "Other"])
@@ -487,10 +495,6 @@ with st.sidebar:
         run_voice = st.checkbox("💬 Customer Voice", value=True)
         run_opp   = st.checkbox("🎯 Opportunity Finder", value=True)
         run_exec  = st.checkbox("📋 Executive Summary", value=True)
-    else:
-        segment = ""; geography = "Global"; market_size = ""
-        timeframe = "Current (2025–2026)"; unique_angle = ""
-        run_trend = run_comp = run_voice = run_opp = run_exec = True
 
     params = {
         "segment": segment, "geography": geography,
