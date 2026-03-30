@@ -6,7 +6,7 @@ A Streamlit app that runs 5 AI agents in sequence to generate end-to-end market 
 
 ```bash
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=sk-ant-...
+export ANTHROPIC_API_KEY=<key>...
 streamlit run market_research_app.py
 ```
 
